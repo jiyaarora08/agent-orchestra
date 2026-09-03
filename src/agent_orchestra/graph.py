@@ -12,11 +12,12 @@ from agent_orchestra.tools import (
     EMAIL_TOOLS,
     CALENDAR_TOOLS,
     FILE_TOOLS,
+    REMINDER_TOOLS,
 )
 
 
 Worker = Literal["email", "calendar", "files", "reminders"]
-WORKERS = {"email", "calendar", "files"}
+WORKERS = {"email", "calendar", "files", "reminders"}
 
 
 class SupervisorDecision(BaseModel):
@@ -57,6 +58,10 @@ CALENDAR_PROMPT = (
 )
 FILES_PROMPT = (
     "You are the files specialist. Use only file tools. "
+    "When finished, reply with a short status for the lead agent."
+)
+REMINDERS_PROMPT = (
+    "You are the reminders specialist. Use only reminder tools. "
     "When finished, reply with a short status for the lead agent."
 )
 
@@ -122,5 +127,6 @@ def build_graph():
     graph.add_node("email", _worker_node("email", EMAIL_TOOLS, EMAIL_PROMPT))
     graph.add_node("calendar", _worker_node("calendar", CALENDAR_TOOLS, CALENDAR_PROMPT))
     graph.add_node("files", _worker_node("files", FILE_TOOLS, FILES_PROMPT))
+    graph.add_node("reminders", _worker_node("reminders", REMINDER_TOOLS, REMINDERS_PROMPT))
     graph.add_edge(START, "supervisor")
     return graph.compile()
