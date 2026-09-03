@@ -1,13 +1,27 @@
-"""Command-line front door."""
+"""Command-line front door.
+
+The graph is a library. This module is how a human talks to it.
+Keeping them separate means you can later hang a web chat or a
+messaging bot on the same build_graph() without rewriting agents.
+"""
 
 from __future__ import annotations
 
 import argparse
 import sys
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage
 
 from agent_orchestra.graph import build_graph
+
+
+def _print_final(messages: list) -> None:
+    for message in reversed(messages):
+        if isinstance(message, AIMessage) and getattr(message, "name", None) == "supervisor":
+            print(message.content)
+            return
+    last = messages[-1]
+    print(getattr(last, "content", last))
 
 
 def run_once(prompt: str) -> None:
@@ -20,7 +34,7 @@ def run_once(prompt: str) -> None:
         },
         config={"recursion_limit": 12},
     )
-    print(result["messages"][-1].content)
+    _print_final(result["messages"])
 
 
 def main() -> None:
