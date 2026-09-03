@@ -54,3 +54,25 @@ def add_calendar_event(title: str, start: str, end: str) -> str:
 
 
 CALENDAR_TOOLS = [list_calendar_events, add_calendar_event]
+
+
+@tool
+def list_files() -> str:
+    """List files the file worker can read or write."""
+    paths = store.list_files()
+    return "\n".join(paths) if paths else "No files."
+
+
+@tool
+def read_file(path: str) -> str:
+    """Read a file by path."""
+    return store.read_file(path)
+
+
+@tool
+def write_file(path: str, content: str) -> str:
+    """Create or overwrite a file."""
+    return store.write_file(path, content)
+
+
+FILE_TOOLS = [list_files, read_file, write_file]
