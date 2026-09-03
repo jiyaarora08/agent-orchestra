@@ -34,3 +34,23 @@ def draft_email(to: str, subject: str, body: str) -> str:
 
 
 EMAIL_TOOLS = [list_unread_email, mark_email_read, draft_email]
+
+
+@tool
+def list_calendar_events() -> str:
+    """List calendar events."""
+    events = store.list_events()
+    if not events:
+        return "No events."
+    return "\n".join(
+        f"{e['id']}: {e['title']} ({e['start']} → {e['end']})" for e in events
+    )
+
+
+@tool
+def add_calendar_event(title: str, start: str, end: str) -> str:
+    """Add a calendar event. start and end should be ISO-8601 datetimes."""
+    return store.add_event(title, start, end)
+
+
+CALENDAR_TOOLS = [list_calendar_events, add_calendar_event]
