@@ -105,7 +105,7 @@ def supervisor(state: OrchestraState) -> Command:
         [SystemMessage(content=SUPERVISOR_PROMPT), *state["messages"]]
     )
 
-    if decision.next_worker == "finish" or decision.next_worker not in WORKERS:
+    if decision.next_worker == "finish":
         return Command(
             goto=END,
             update={"messages": [AIMessage(content=decision.task, name="supervisor")]},
@@ -121,6 +121,8 @@ def build_graph():
     """Compile the state machine.
 
     START → supervisor ⇄ workers → END
+    Compiling turns the drawing into a callable app with invoke() and
+    stream(). Recursion limit caps accidental supervisor↔worker loops.
     """
     graph = StateGraph(OrchestraState)
     graph.add_node("supervisor", supervisor)
