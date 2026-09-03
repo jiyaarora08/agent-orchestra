@@ -17,7 +17,8 @@ def run_once(prompt: str) -> None:
             "messages": [HumanMessage(content=prompt)],
             "task": "",
             "last_worker": "",
-        }
+        },
+        config={"recursion_limit": 12},
     )
     print(result["messages"][-1].content)
 
