@@ -76,3 +76,21 @@ def write_file(path: str, content: str) -> str:
 
 
 FILE_TOOLS = [list_files, read_file, write_file]
+
+
+@tool
+def add_reminder(text: str, when: str) -> str:
+    """Create a reminder. when should be ISO-8601 or a clear datetime string."""
+    return store.add_reminder(text, when)
+
+
+@tool
+def list_reminders() -> str:
+    """List existing reminders."""
+    items = store.list_reminders()
+    if not items:
+        return "No reminders."
+    return "\n".join(f"{r['id']}: {r['text']} at {r['when']}" for r in items)
+
+
+REMINDER_TOOLS = [add_reminder, list_reminders]
